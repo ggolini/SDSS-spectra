@@ -63,11 +63,6 @@ export LANG=C
 
 
 
-
-
-# file containting ra, dec etc of the stars you want to download the spectra
-file="optical_search_617515.csv"
-
 # Output Directories
 # General directory for that galaxy
 bdir=build
@@ -79,58 +74,11 @@ if ! [ -d $plots ]; then mkdir $plots; fi
 
 
 
-
-###########################################################################
-
-#                           DOwnload spectra                            #
-
-###########################################################################
-# for each ra and dec in the list I run the python code to download the table
-# directory to save spectras
-spectra=spectra
-if ! [ -d $spectra ]; then mkdir $spectra; fi
-ssaved=$spectra/done_sed.txt
-if [ -f $ssaved ]; then
-    echo " "
-    echo "Spectra already saved"
-    echo " "
-else
-    # code to download spectra in the list
-    python3.11 ret_spectra.py $file
-    echo done > $ssaved
-fi
-
-
-
-###########################################################################
-
-#                            Save    SED                                 #
-
-###########################################################################
-# directory to save SEDs
-seds=seds
-if ! [ -d $seds ]; then mkdir $seds; fi
-# save table with only the flux and the wavelength from the fits file
-sedsaved=$seds/done_sed.txt
-if [ -f $sedsaved ]; then
-    echo " "
-    echo "SED already saved"
-    echo " "
-else
-    for i in $(ls $spectra/*.fits); do
-        base=$(basename $i)
-        asttable $i -h1 -c1,2 -o $seds/$base.txt
-    done
-    
-    echo done > $sedsaved
-fi
-
-
-
 ###########################################################################
 
 #                                   Plots                                 #
 
 ###########################################################################
 
-python3.11 plot_spectra.py
+python3.11 plot_MILES_spectra.py
+python3.11 plot_filter_all.py
